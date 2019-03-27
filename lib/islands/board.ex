@@ -45,6 +45,14 @@ defmodule Islands.Board do
     guess |> Response.check_guess(board) |> Response.format_response(board)
   end
 
+  @spec forested_types(t) :: [Island.type()]
+  def forested_types(%Board{islands: islands} = _board) do
+    islands
+    |> Map.values()
+    |> Enum.filter(&Island.forested?/1)
+    |> Enum.map(& &1.type)
+  end
+
   ## Private functions
 
   @spec overlaps_board_island?(Board.islands(), Island.t()) :: boolean

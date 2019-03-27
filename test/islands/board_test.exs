@@ -52,18 +52,49 @@ defmodule Islands.BoardTest do
 
     boards = %{incomplete: incomplete, complete: complete}
 
-    {:ok, coords: coords, islands: islands, boards: boards}
+    poison =
+      ~s<{\"misses\":[],\"islands\":{\"square\":{\"type\":\"square\",\"hits\":[],\"coords\":[{\"row\":9,\"col\":5},{\"row\":10,\"col\":5},{\"row\":9,\"col\":6},{\"row\":10,\"col\":6}]},\"dot\":{\"type\":\"dot\",\"hits\":[],\"coords\":[{\"row\":9,\"col\":9}]}}}>
+
+    jason =
+      ~s<{\"islands\":{\"dot\":{\"coords\":[{\"col\":9,\"row\":9}],\"hits\":[],\"type\":\"dot\"},\"square\":{\"coords\":[{\"col\":5,\"row\":9},{\"col\":5,\"row\":10},{\"col\":6,\"row\":9},{\"col\":6,\"row\":10}],\"hits\":[],\"type\":\"square\"}},\"misses\":[]}>
+
+    decoded = %{
+      "islands" => %{
+        "dot" => %{
+          "coords" => [%{"col" => 9, "row" => 9}],
+          "hits" => [],
+          "type" => "dot"
+        },
+        "square" => %{
+          "coords" => [
+            %{"col" => 5, "row" => 9},
+            %{"col" => 5, "row" => 10},
+            %{"col" => 6, "row" => 9},
+            %{"col" => 6, "row" => 10}
+          ],
+          "hits" => [],
+          "type" => "square"
+        }
+      },
+      "misses" => []
+    }
+
+    {:ok,
+     json: %{poison: poison, jason: jason, decoded: decoded},
+     coords: coords,
+     islands: islands,
+     boards: boards}
   end
 
   describe "A board struct" do
-    test "can be encoded by Poison", %{boards: boards} do
-      assert Poison.encode!(boards.incomplete) ==
-               ~s<{\"misses\":[],\"islands\":{\"square\":{\"type\":\"square\",\"hits\":[],\"coords\":[{\"row\":9,\"col\":5},{\"row\":10,\"col\":5},{\"row\":9,\"col\":6},{\"row\":10,\"col\":6}]},\"dot\":{\"type\":\"dot\",\"hits\":[],\"coords\":[{\"row\":9,\"col\":9}]}}}>
+    test "can be encoded by Poison", %{boards: boards, json: json} do
+      assert Poison.encode!(boards.incomplete) == json.poison
+      assert Poison.decode!(json.poison) == json.decoded
     end
 
-    test "can be encoded by Jason", %{boards: boards} do
-      assert Jason.encode!(boards.incomplete) ==
-               ~s<{\"islands\":{\"dot\":{\"coords\":[{\"col\":9,\"row\":9}],\"hits\":[],\"type\":\"dot\"},\"square\":{\"coords\":[{\"col\":5,\"row\":9},{\"col\":5,\"row\":10},{\"col\":6,\"row\":9},{\"col\":6,\"row\":10}],\"hits\":[],\"type\":\"square\"}},\"misses\":[]}>
+    test "can be encoded by Jason", %{boards: boards, json: json} do
+      assert Jason.encode!(boards.incomplete) == json.jason
+      assert Jason.decode!(json.jason) == json.decoded
     end
   end
 
@@ -113,6 +144,22 @@ defmodule Islands.BoardTest do
                boards.incomplete
                |> Board.position_island(square)
                |> Board.guess(coords.dot)
+    end
+  end
+
+  describe "Board.forested_types/1" do
+    test "returns a list of forested island types", %{boards: boards} do
+      atoll = boards.complete.islands.atoll
+      atoll = put_in(atoll.hits, atoll.coords)
+      dot = boards.complete.islands.dot
+      dot = put_in(dot.hits, dot.coords)
+
+      board =
+        boards.complete
+        |> Board.position_island(atoll)
+        |> Board.position_island(dot)
+
+      assert Board.forested_types(board) == [:atoll, :dot]
     end
   end
 end
