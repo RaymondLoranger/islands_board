@@ -53,6 +53,17 @@ defmodule Islands.Board do
     |> Enum.map(& &1.type)
   end
 
+  @spec hits(t) :: non_neg_integer
+  def hits(%Board{islands: islands} = _board) do
+    islands
+    |> Map.values()
+    |> Enum.map(&MapSet.size(&1.hits))
+    |> Enum.sum()
+  end
+
+  @spec misses(t) :: non_neg_integer
+  def misses(%Board{misses: misses} = _board), do: MapSet.size(misses)
+
   ## Private functions
 
   @spec overlaps_board_island?(Board.islands(), Island.t()) :: boolean
