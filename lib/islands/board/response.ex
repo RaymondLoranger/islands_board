@@ -1,9 +1,8 @@
 defmodule Islands.Board.Response do
   alias Islands.{Board, Coord, Island}
 
+  @type guess_check :: {:hit, Island.t()} | {:miss, Coord.t()}
   @type t :: {:hit | :miss, Island.type() | :none, :no_win | :win, Board.t()}
-
-  @typep guess_check :: {:hit, Island.t()} | {:miss, Coord.t()}
 
   @spec check_guess(Board.t(), Coord.t()) :: guess_check
   def check_guess(%Board{} = board, %Coord{} = guess) do
