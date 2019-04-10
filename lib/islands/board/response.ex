@@ -15,12 +15,12 @@ defmodule Islands.Board.Response do
   end
 
   @spec format_response({:hit, Island.t()} | {:miss, Coord.t()}, Board.t()) :: t
-  def format_response({:hit, island}, %Board{} = board) do
+  def format_response({:hit, island} = _guess_check, %Board{} = board) do
     board = put_in(board.islands[island.type], island)
     {:hit, forest_check(island), win_check(board), board}
   end
 
-  def format_response({:miss, guess}, %Board{} = board) do
+  def format_response({:miss, guess} = _guess_check, %Board{} = board) do
     board = update_in(board.misses, &MapSet.put(&1, guess))
     {:miss, :none, :no_win, board}
   end
