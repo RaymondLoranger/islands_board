@@ -7,13 +7,15 @@ defmodule Islands.Board do
   @book_ref Application.get_env(@app, :book_ref)
 
   @moduledoc """
-  Models a `board` for the _Game of Islands_.
+  Models a `board` in the _Game of Islands_.
   \n##### #{@book_ref}
   """
 
   alias __MODULE__
   alias __MODULE__.Response
   alias Islands.{Coord, Island}
+
+  @island_types [:atoll, :dot, :l_shape, :s_shape, :square]
 
   @derive [Poison.Encoder]
   @derive Jason.Encoder
@@ -23,14 +25,12 @@ defmodule Islands.Board do
   @type islands :: %{Island.type() => Island.t()}
   @type t :: %Board{islands: islands, misses: Island.coords()}
 
-  @island_types Application.get_env(@app, :island_types)
-
-  @spec new() :: t
-  def new(), do: %Board{islands: %{}, misses: MapSet.new()}
+  @spec new :: t
+  def new, do: %Board{islands: %{}, misses: MapSet.new()}
 
   @spec position_island(t, Island.t()) :: t | {:error, atom}
   def position_island(%Board{} = board, %Island{} = island) do
-    if overlaps_board_island?(board.islands, island),
+    if overlaps_board_island?(island, board.islands),
       do: {:error, :overlapping_island},
       else: put_in(board.islands[island.type], island)
   end
@@ -42,7 +42,7 @@ defmodule Islands.Board do
 
   @spec guess(t, Coord.t()) :: Response.t()
   def guess(%Board{} = board, %Coord{} = guess) do
-    guess |> Response.check_guess(board) |> Response.format_response(board)
+    board |> Response.check_guess(guess) |> Response.format_response(board)
   end
 
   @spec forested_types(t) :: [Island.type()]
@@ -66,10 +66,10 @@ defmodule Islands.Board do
 
   ## Private functions
 
-  @spec overlaps_board_island?(Board.islands(), Island.t()) :: boolean
-  defp overlaps_board_island?(islands, new_island) do
+  @spec overlaps_board_island?(Island.t(), Board.islands()) :: boolean
+  defp overlaps_board_island?(new_island, islands) do
     Enum.any?(islands, fn {type, island} ->
-      type != new_island.type and Island.overlaps?(island, new_island)
+      type != new_island.type and Island.overlaps?(new_island, island)
     end)
   end
 end

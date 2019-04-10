@@ -1,6 +1,6 @@
 # Islands Board
 
-Models a `board` for the _Game of Islands_.
+Models a `board` in the _Game of Islands_.
 
 ##### Based on the book [Functional Web Development](https://pragprog.com/book/lhelph/functional-web-development-with-elixir-otp-and-phoenix) by Lance Halvorsen.
 

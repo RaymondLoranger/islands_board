@@ -4,7 +4,7 @@ defmodule Islands.Board.MixProject do
   def project do
     [
       app: :islands_board,
-      version: "0.1.6",
+      version: "0.1.7",
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       name: "Islands Board",
@@ -21,7 +21,7 @@ defmodule Islands.Board.MixProject do
 
   defp description do
     """
-    Models a board for the Game of Islands.
+    Models a board in the Game of Islands.
     """
   end
 
@@ -46,7 +46,6 @@ defmodule Islands.Board.MixProject do
     [
       {:mix_tasks,
        github: "RaymondLoranger/mix_tasks", only: :dev, runtime: false},
-      # {:poison, "~> 3.0"},
       {:poison, "~> 4.0"},
       {:jason, "~> 1.0"},
       {:persist_config, "~> 0.1"},

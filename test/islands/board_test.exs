@@ -6,19 +6,19 @@ defmodule Islands.BoardTest do
   doctest Board
 
   setup_all do
-    # See picture of the game in Functional Web Development on page 13...
-    {:ok, square_coord} = Coord.new(9, 5)
+    # See Player's Board in Functional Web Development on page 13...
+    {:ok, atoll_coord} = Coord.new(1, 1)
     {:ok, dot_coord} = Coord.new(9, 9)
     {:ok, l_shape_coord} = Coord.new(3, 7)
     {:ok, s_shape_coord} = Coord.new(6, 2)
-    {:ok, atoll_coord} = Coord.new(1, 1)
+    {:ok, square_coord} = Coord.new(9, 5)
     {:ok, dot_overlap_coord} = Coord.new(3, 2)
 
-    {:ok, square} = Island.new(:square, square_coord)
+    {:ok, atoll} = Island.new(:atoll, atoll_coord)
     {:ok, dot} = Island.new(:dot, dot_coord)
     {:ok, l_shape} = Island.new(:l_shape, l_shape_coord)
     {:ok, s_shape} = Island.new(:s_shape, s_shape_coord)
-    {:ok, atoll} = Island.new(:atoll, atoll_coord)
+    {:ok, square} = Island.new(:square, square_coord)
     {:ok, dot_overlap} = Island.new(:dot, dot_overlap_coord)
 
     incomplete =
@@ -33,20 +33,20 @@ defmodule Islands.BoardTest do
       |> Board.position_island(atoll)
 
     coords = %{
-      square: square_coord,
+      atoll: atoll_coord,
       dot: dot_coord,
       l_shape: l_shape_coord,
       s_shape: s_shape_coord,
-      atoll: atoll_coord,
+      square: square_coord,
       dot_overlap: dot_overlap_coord
     }
 
     islands = %{
-      square: square,
+      atoll: atoll,
       dot: dot,
       l_shape: l_shape,
       s_shape: s_shape,
-      atoll: atoll,
+      square: square,
       dot_overlap: dot_overlap
     }
 
@@ -102,6 +102,7 @@ defmodule Islands.BoardTest do
     test "returns a board given valid args", %{islands: islands} do
       square = islands.square
       board = Board.new() |> Board.position_island(square)
+      assert %Board{} = board
       assert %{square: %Island{} = ^square} = board.islands
     end
 

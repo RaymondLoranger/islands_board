@@ -3,9 +3,9 @@ defmodule Islands.Board.Response do
 
   @type t :: {:hit | :miss, Island.type() | :none, :no_win | :win, Board.t()}
 
-  @spec check_guess(Coord.t(), Board.t()) ::
+  @spec check_guess(Board.t(), Coord.t()) ::
           {:hit, Island.t()} | {:miss, Coord.t()}
-  def check_guess(%Coord{} = guess, %Board{} = board) do
+  def check_guess(%Board{} = board, %Coord{} = guess) do
     Enum.find_value(board.islands, {:miss, guess}, fn {_type, island} ->
       case Island.guess(island, guess) do
         {:hit, island} -> {:hit, island}
