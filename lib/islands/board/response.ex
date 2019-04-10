@@ -3,8 +3,9 @@ defmodule Islands.Board.Response do
 
   @type t :: {:hit | :miss, Island.type() | :none, :no_win | :win, Board.t()}
 
-  @spec check_guess(Board.t(), Coord.t()) ::
-          {:hit, Island.t()} | {:miss, Coord.t()}
+  @typep guess_check :: {:hit, Island.t()} | {:miss, Coord.t()}
+
+  @spec check_guess(Board.t(), Coord.t()) :: guess_check
   def check_guess(%Board{} = board, %Coord{} = guess) do
     Enum.find_value(board.islands, {:miss, guess}, fn {_type, island} ->
       case Island.guess(island, guess) do
@@ -14,7 +15,7 @@ defmodule Islands.Board.Response do
     end)
   end
 
-  @spec format_response({:hit, Island.t()} | {:miss, Coord.t()}, Board.t()) :: t
+  @spec format_response(guess_check, Board.t()) :: t
   def format_response({:hit, island} = _guess_check, %Board{} = board) do
     board = put_in(board.islands[island.type], island)
     {:hit, forest_check(island), win_check(board), board}
