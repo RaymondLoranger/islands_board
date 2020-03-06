@@ -30,7 +30,7 @@ defmodule Islands.Board do
 
   @spec position_island(t, Island.t()) :: t | {:error, atom}
   def position_island(%Board{} = board, %Island{} = island) do
-    if overlaps_board_island?(island, board.islands),
+    if overlaps_board_islands?(island, board.islands),
       do: {:error, :overlapping_island},
       else: put_in(board.islands[island.type], island)
   end
@@ -66,8 +66,8 @@ defmodule Islands.Board do
 
   ## Private functions
 
-  @spec overlaps_board_island?(Island.t(), Board.islands()) :: boolean
-  defp overlaps_board_island?(new_island, islands) do
+  @spec overlaps_board_islands?(Island.t(), Board.islands()) :: boolean
+  defp overlaps_board_islands?(new_island, islands) do
     Enum.any?(islands, fn {type, island} ->
       type != new_island.type and Island.overlaps?(new_island, island)
     end)
