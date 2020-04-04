@@ -64,6 +64,25 @@ defmodule Islands.Board do
   @spec misses(t) :: non_neg_integer
   def misses(%Board{misses: misses} = _board), do: MapSet.size(misses)
 
+  @spec grid_positions(t) :: %{Island.type() => map}
+  def grid_positions(%Board{islands: islands} = _board) do
+    for {type, island} <- islands, into: %{} do
+      {type, Island.grid_position(island)}
+    end
+  end
+
+  @spec hit_cells(t) :: %{Island.type() => [<<_::2, _::_*8>>]}
+  def hit_cells(%Board{islands: islands} = _board) do
+    for {type, island} <- islands, into: %{} do
+      {type, Island.hit_cells(island)}
+    end
+  end
+
+  @spec miss_squares(t) :: %{:squares => [Coord.square()]}
+  def miss_squares(%Board{misses: misses} = _board) do
+    %{squares: Enum.map(misses, &Coord.to_square/1)}
+  end
+
   ## Private functions
 
   @spec overlaps_board_islands?(Island.t(), Board.islands()) :: boolean
