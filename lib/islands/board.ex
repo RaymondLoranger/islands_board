@@ -2,13 +2,9 @@
 # │ Based on the book "Functional Web Development" by Lance Halvorsen. │
 # └────────────────────────────────────────────────────────────────────┘
 defmodule Islands.Board do
-  use PersistConfig
-
-  @book_ref Application.get_env(@app, :book_ref)
-
   @moduledoc """
   Models a `board` in the _Game of Islands_.
-  \n##### #{@book_ref}
+  \n##### #{Islands.Config.get(:book_ref)}
   """
 
   alias __MODULE__
