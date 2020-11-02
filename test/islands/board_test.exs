@@ -106,14 +106,15 @@ defmodule Islands.BoardTest do
       "misses" => []
     }
 
-    {:ok,
-     json: %{poison: poison, jason: jason, decoded: decoded},
-     coords: coords,
-     islands: islands,
-     boards: boards,
-     grid_positions: grid_positions,
-     hits: hits,
-     misses: misses}
+    %{
+      json: %{poison: poison, jason: jason, decoded: decoded},
+      coords: coords,
+      islands: islands,
+      boards: boards,
+      grid_positions: grid_positions,
+      hits: hits,
+      misses: misses
+    }
   end
 
   describe "A board struct" do
