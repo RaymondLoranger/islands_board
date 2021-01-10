@@ -39,7 +39,7 @@ defmodule Islands.Board do
 
   @spec guess(t, Coord.t()) :: Response.t()
   def guess(%Board{} = board, %Coord{} = guess) do
-    board |> Response.check_guess(guess) |> Response.format_response(board)
+    Response.check_guess(board, guess) |> Response.format_response(board)
   end
 
   @spec forested_types(t) :: [Island.type()]
