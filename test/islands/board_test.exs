@@ -7,19 +7,19 @@ defmodule Islands.BoardTest do
 
   setup_all do
     # See Player's Board in Functional Web Development on page 13...
-    {:ok, atoll_coord} = Coord.new(1, 1)
-    {:ok, dot_coord} = Coord.new(9, 9)
-    {:ok, l_shape_coord} = Coord.new(3, 7)
-    {:ok, s_shape_coord} = Coord.new(6, 2)
-    {:ok, square_coord} = Coord.new(9, 5)
-    {:ok, dot_overlap_coord} = Coord.new(3, 2)
+    {:ok, atoll_origin} = Coord.new(1, 1)
+    {:ok, dot_origin} = Coord.new(9, 9)
+    {:ok, l_shape_origin} = Coord.new(3, 7)
+    {:ok, s_shape_origin} = Coord.new(6, 2)
+    {:ok, square_origin} = Coord.new(9, 5)
+    {:ok, dot_overlap_origin} = Coord.new(3, 2)
 
-    {:ok, atoll} = Island.new(:atoll, atoll_coord)
-    {:ok, dot} = Island.new(:dot, dot_coord)
-    {:ok, l_shape} = Island.new(:l_shape, l_shape_coord)
-    {:ok, s_shape} = Island.new(:s_shape, s_shape_coord)
-    {:ok, square} = Island.new(:square, square_coord)
-    {:ok, dot_overlap} = Island.new(:dot, dot_overlap_coord)
+    {:ok, atoll} = Island.new(:atoll, atoll_origin)
+    {:ok, dot} = Island.new(:dot, dot_origin)
+    {:ok, l_shape} = Island.new(:l_shape, l_shape_origin)
+    {:ok, s_shape} = Island.new(:s_shape, s_shape_origin)
+    {:ok, square} = Island.new(:square, square_origin)
+    {:ok, dot_overlap} = Island.new(:dot, dot_overlap_origin)
 
     grid_positions = %{
       atoll: %{gridColumnStart: 1, gridRowStart: 1},
@@ -57,13 +57,13 @@ defmodule Islands.BoardTest do
       |> Board.position_island(s_shape)
       |> Board.position_island(atoll)
 
-    coords = %{
-      atoll: atoll_coord,
-      dot: dot_coord,
-      l_shape: l_shape_coord,
-      s_shape: s_shape_coord,
-      square: square_coord,
-      dot_overlap: dot_overlap_coord
+    origins = %{
+      atoll: atoll_origin,
+      dot: dot_origin,
+      l_shape: l_shape_origin,
+      s_shape: s_shape_origin,
+      square: square_origin,
+      dot_overlap: dot_overlap_origin
     }
 
     islands = %{
@@ -108,7 +108,7 @@ defmodule Islands.BoardTest do
 
     %{
       json: %{poison: poison, jason: jason, decoded: decoded},
-      coords: coords,
+      origins: origins,
       islands: islands,
       boards: boards,
       grid_positions: grid_positions,
@@ -137,7 +137,7 @@ defmodule Islands.BoardTest do
       assert %{square: %Island{} = ^square} = board.islands
     end
 
-    test "returns {:error, ...} on overlapping island", %{islands: islands} do
+    test "returns {:error, reason} if islands overlap", %{islands: islands} do
       atoll = islands.atoll
       dot_overlap = islands.dot_overlap
       %Board{} = board = Board.new() |> Board.position_island(atoll)
@@ -158,29 +158,29 @@ defmodule Islands.BoardTest do
   end
 
   describe "Board.guess/2" do
-    test "detects a hit guess", %{coords: coords, boards: boards} do
+    test "detects a hit guess", %{origins: origins, boards: boards} do
       assert {:hit, :dot, :no_win, %Board{}} =
-               Board.guess(boards.complete, coords.dot)
+               Board.guess(boards.complete, origins.dot)
     end
 
-    test "detects a miss guess", %{coords: coords, boards: boards} do
+    test "detects a miss guess", %{origins: origins, boards: boards} do
       assert {:miss, :none, :no_win, %Board{}} =
-               Board.guess(boards.complete, coords.s_shape)
+               Board.guess(boards.complete, origins.s_shape)
     end
 
-    test "detects a win guess", %{coords: coords, boards: boards} do
+    test "detects a win guess", %{origins: origins, boards: boards} do
       square = boards.incomplete.islands.square
       square = put_in(square.hits, square.coords)
 
       assert {:hit, :dot, :win, %Board{}} =
                boards.incomplete
                |> Board.position_island(square)
-               |> Board.guess(coords.dot)
+               |> Board.guess(origins.dot)
     end
   end
 
   describe "Board.forested_types/1" do
-    test "returns a list of forested island types", %{boards: boards} do
+    test "lists the island types of forested islands", %{boards: boards} do
       atoll = boards.complete.islands.atoll
       atoll = put_in(atoll.hits, atoll.coords)
       dot = boards.complete.islands.dot
@@ -191,7 +191,7 @@ defmodule Islands.BoardTest do
         |> Board.position_island(atoll)
         |> Board.position_island(dot)
 
-      assert Board.forested_types(board) == [:atoll, :dot]
+      assert Board.forested_types(board) |> Enum.sort() == [:atoll, :dot]
     end
   end
 

@@ -1,9 +1,21 @@
 defmodule Islands.Board.Response do
+  @moduledoc """
+  A 4-element tuple reflecting the effect of a guess (hit or miss) on a board.
+  """
+
   alias Islands.{Board, Coord, Island}
 
+  @typedoc "Preliminary response to a guess"
   @type guess_check :: {:hit, Island.t()} | {:miss, Coord.t()}
+  @typedoc "Full response to a guess"
   @type t :: {:hit | :miss, Island.type() | :none, :no_win | :win, Board.t()}
 
+  @doc """
+  Checks if `guess` hit any island on `board`.
+
+  Returns `{:hit, hit_island}`, where hit_island is the island hit by `guess`
+  once updated, or `{:miss, guess}` if `guess` was a miss.
+  """
   @spec check_guess(Board.t(), Coord.t()) :: guess_check
   def check_guess(%Board{} = board, %Coord{} = guess) do
     Enum.find_value(board.islands, {:miss, guess}, fn {_type, island} ->
@@ -14,6 +26,9 @@ defmodule Islands.Board.Response do
     end)
   end
 
+  @doc """
+  Converts a preliminary response to a guess into a full response.
+  """
   @spec format_response(guess_check, Board.t()) :: t
   def format_response({:hit, island} = _guess_check, %Board{} = board) do
     board = put_in(board.islands[island.type], island)
