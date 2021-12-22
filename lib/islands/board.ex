@@ -2,10 +2,14 @@
 # │ Based on the book "Functional Web Development" by Lance Halvorsen. │
 # └────────────────────────────────────────────────────────────────────┘
 defmodule Islands.Board do
-  @moduledoc """
-  A `board` struct and functions for the _Game of Islands_.
+  @board "[`board`](`t:Islands.Board.t/0`)"
+  @readme "https://github.com/RaymondLoranger/islands_vue_client#readme"
+  @response "[`response`](`t:Islands.Board.Response.t/0`)"
 
-  The `board` struct contains the fields islands and misses representing the
+  @moduledoc """
+  A #{@board} struct and functions for the [Game of Islands](#{@readme}).
+
+  The #{@board} struct contains the fields islands and misses representing the
   characteristics of a board in the _Game of Islands_.
 
   ##### Based on the book [Functional Web Development](https://pragprog.com/book/lhelph/functional-web-development-with-elixir-otp-and-phoenix) by Lance Halvorsen.
@@ -24,16 +28,17 @@ defmodule Islands.Board do
 
   @typedoc "A map assigning islands to their types"
   @type islands :: %{Island.type() => Island.t()}
+  @typedoc "A board struct for the Game of Islands"
   @type t :: %Board{islands: islands, misses: Island.coords()}
 
   @doc """
-  Returns an empty `board` struct.
+  Returns an empty #{@board} struct.
   """
   @spec new :: t
   def new, do: %Board{islands: %{}, misses: MapSet.new()}
 
   @doc """
-  Positions `island` on `board` and returns an updated board or
+  Positions `island` on `board` and returns an updated `board` or
   `{:error, reason}` if `island` overlaps another `board`'s island.
   """
   @spec position_island(t, Island.t()) :: t | {:error, atom}
@@ -52,7 +57,7 @@ defmodule Islands.Board do
   end
 
   @doc """
-  Checks if `guess` hit any island on `board` and returns a response.
+  Checks if `guess` hit any island on `board` and returns a #{@response} tuple.
   """
   @spec guess(t, Coord.t()) :: Response.t()
   def guess(%Board{} = board, %Coord{} = guess) do
