@@ -130,7 +130,7 @@ defmodule Islands.BoardTest do
   end
 
   describe "Board.position_island/2" do
-    test "returns a board given valid args", %{islands: islands} do
+    test "returns a board struct given valid args", %{islands: islands} do
       square = islands.square
       board = Board.new() |> Board.position_island(square)
       assert %Board{} = board
