@@ -22,7 +22,7 @@ defmodule Islands.Board do
   @enforce_keys [:islands, :misses]
   defstruct [:islands, :misses]
 
-  @typedoc "A map assigning islands to their types"
+  @typedoc "A map assigning islands to their island types"
   @type islands :: %{Island.type() => Island.t()}
   @typedoc "A board struct for the Game of Islands"
   @type t :: %Board{islands: islands, misses: Island.coords()}
@@ -112,7 +112,7 @@ defmodule Islands.Board do
 
   @doc """
   Returns a map assigning to :squares the list of square numbers
-  for the `board`'s misses.
+  from the `board`'s misses.
   """
   @spec miss_squares(t) :: %{:squares => [Coord.square()]}
   def miss_squares(%Board{misses: misses} = _board) do
