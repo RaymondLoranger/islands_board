@@ -8,7 +8,7 @@ defmodule Islands.Board do
   The board struct contains the fields `islands` and `misses` representing the
   characteristics of a board in the _Game of Islands_.
 
-  ##### Based on the book [Functional Web Development](https://pragprog.com/book/lhelph/functional-web-development-with-elixir-otp-and-phoenix) by Lance Halvorsen.
+  ##### Based on the book [Functional Web Development](https://pragprog.com/titles/lhelph/functional-web-development-with-elixir-otp-and-phoenix/) by Lance Halvorsen.
   """
 
   alias __MODULE__
