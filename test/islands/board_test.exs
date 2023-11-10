@@ -78,10 +78,10 @@ defmodule Islands.BoardTest do
     boards = %{incomplete: incomplete, complete: complete}
 
     poison =
-      ~s<{"misses":[],"islands":{"square":{"type":"square","origin":{"row":9,"col":5},"hits":[],"coords":[{"row":9,"col":5},{"row":10,"col":5},{"row":9,"col":6},{"row":10,"col":6}]},"dot":{"type":"dot","origin":{"row":9,"col":9},"hits":[],"coords":[{"row":9,"col":9}]}}}>
+      ~s<{"islands":{"square":{"coords":[{"col":5,"row":9},{"col":6,"row":9},{"col":5,"row":10},{"col":6,"row":10}],"hits":[],"origin":{"col":5,"row":9},"type":"square"},"dot":{"coords":[{"col":9,"row":9}],"hits":[],"origin":{"col":9,"row":9},"type":"dot"}},"misses":[]}>
 
     jason =
-      ~s<{"islands":{"dot":{"coords":[{"col":9,"row":9}],"hits":[],"origin":{"col":9,"row":9},"type":"dot"},"square":{"coords":[{"col":5,"row":9},{"col":5,"row":10},{"col":6,"row":9},{"col":6,"row":10}],"hits":[],"origin":{"col":5,"row":9},"type":"square"}},"misses":[]}>
+      ~s<{"islands":{"dot":{"type":"dot","origin":{"row":9,"col":9},"coords":[{"row":9,"col":9}],"hits":[]},"square":{"type":"square","origin":{"row":9,"col":5},"coords":[{"row":9,"col":5},{"row":9,"col":6},{"row":10,"col":5},{"row":10,"col":6}],"hits":[]}},"misses":[]}>
 
     decoded = %{
       "islands" => %{
@@ -94,8 +94,8 @@ defmodule Islands.BoardTest do
         "square" => %{
           "coords" => [
             %{"col" => 5, "row" => 9},
-            %{"col" => 5, "row" => 10},
             %{"col" => 6, "row" => 9},
+            %{"col" => 5, "row" => 10},
             %{"col" => 6, "row" => 10}
           ],
           "hits" => [],
