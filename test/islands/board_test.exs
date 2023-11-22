@@ -77,9 +77,6 @@ defmodule Islands.BoardTest do
 
     boards = %{incomplete: incomplete, complete: complete}
 
-    poison =
-      ~s<{"islands":{"square":{"coords":[{"col":5,"row":9},{"col":6,"row":9},{"col":5,"row":10},{"col":6,"row":10}],"hits":[],"origin":{"col":5,"row":9},"type":"square"},"dot":{"coords":[{"col":9,"row":9}],"hits":[],"origin":{"col":9,"row":9},"type":"dot"}},"misses":[]}>
-
     jason =
       ~s<{"islands":{"dot":{"type":"dot","origin":{"row":9,"col":9},"coords":[{"row":9,"col":9}],"hits":[]},"square":{"type":"square","origin":{"row":9,"col":5},"coords":[{"row":9,"col":5},{"row":9,"col":6},{"row":10,"col":5},{"row":10,"col":6}],"hits":[]}},"misses":[]}>
 
@@ -107,7 +104,7 @@ defmodule Islands.BoardTest do
     }
 
     %{
-      json: %{poison: poison, jason: jason, decoded: decoded},
+      json: %{jason: jason, decoded: decoded},
       origins: origins,
       islands: islands,
       boards: boards,
@@ -118,11 +115,6 @@ defmodule Islands.BoardTest do
   end
 
   describe "A board struct" do
-    test "can be encoded by Poison", %{boards: boards, json: json} do
-      assert Poison.encode!(boards.incomplete) == json.poison
-      assert Poison.decode!(json.poison) == json.decoded
-    end
-
     test "can be encoded by Jason", %{boards: boards, json: json} do
       assert Jason.encode!(boards.incomplete) == json.jason
       assert Jason.decode!(json.jason) == json.decoded
