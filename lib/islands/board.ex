@@ -120,7 +120,7 @@ defmodule Islands.Board do
 
   ## Private functions
 
-  @spec overlaps_board_islands?(Island.t(), Board.islands()) :: boolean
+  @spec overlaps_board_islands?(Island.t(), islands) :: boolean
   defp overlaps_board_islands?(new_island, islands) do
     Enum.any?(islands, fn {type, island} ->
       type != new_island.type and Island.overlaps?(new_island, island)
