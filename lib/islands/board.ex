@@ -17,7 +17,7 @@ defmodule Islands.Board do
 
   @island_types [:atoll, :dot, :l_shape, :s_shape, :square]
 
-  @derive Jason.Encoder
+  @derive JSON.Encoder
   @enforce_keys [:islands, :misses]
   defstruct [:islands, :misses]
 
