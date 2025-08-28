@@ -4,7 +4,7 @@ defmodule Islands.Board.MixProject do
   def project do
     [
       app: :islands_board,
-      version: "0.1.34",
+      version: "0.1.35",
       elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
       name: "Islands Board",
