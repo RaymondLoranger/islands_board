@@ -6,7 +6,7 @@ defmodule Islands.Board do
   A board struct and functions for the _Game of Islands_.
 
   The board struct contains the fields `islands` and `misses` representing the
-  characteristics of a board in the _Game of Islands_.
+  properties of a board in the _Game of Islands_.
 
   ##### Based on the book [Functional Web Development](https://pragprog.com/titles/lhelph/functional-web-development-with-elixir-otp-and-phoenix/) by Lance Halvorsen.
   """
@@ -29,6 +29,7 @@ defmodule Islands.Board do
   @doc """
   Returns an empty board struct.
   """
+  @dialyzer {:no_opaque, [new: 0]}
   @spec new :: t
   def new, do: %Board{islands: %{}, misses: MapSet.new()}
 
@@ -71,7 +72,7 @@ defmodule Islands.Board do
   end
 
   @doc """
-  Returns the `board`'s total number of hits.
+  Returns `board`'s total number of hits.
   """
   @spec hits(t) :: non_neg_integer
   def hits(%Board{islands: islands} = _board) do
@@ -82,7 +83,7 @@ defmodule Islands.Board do
   end
 
   @doc """
-  Returns the `board`'s total number of misses.
+  Returns `board`'s total number of misses.
   """
   @spec misses(t) :: non_neg_integer
   def misses(%Board{misses: misses} = _board), do: MapSet.size(misses)
@@ -111,7 +112,7 @@ defmodule Islands.Board do
 
   @doc """
   Returns a map assigning to :squares the list of square numbers
-  from the `board`'s misses.
+  from `board`'s misses.
   """
   @spec miss_squares(t) :: %{:squares => [Coord.square()]}
   def miss_squares(%Board{misses: misses} = _board) do
