@@ -77,9 +77,11 @@ defmodule Islands.BoardTest do
 
     boards = %{incomplete: incomplete, complete: complete}
 
+    # Incomplete board encoded.
     encoded =
       ~s<{"islands":{"dot":{"type":"dot","origin":{"row":9,"col":9},"coords":[{"row":9,"col":9}],"hits":[]},"square":{"type":"square","origin":{"row":9,"col":5},"coords":[{"row":9,"col":5},{"row":9,"col":6},{"row":10,"col":5},{"row":10,"col":6}],"hits":[]}},"misses":[]}>
 
+    # Incomplete board dencoded.
     decoded = %{
       "islands" => %{
         "dot" => %{
@@ -116,6 +118,7 @@ defmodule Islands.BoardTest do
 
   describe "A board struct" do
     test "can be encoded by JSON", %{boards: boards, json: json} do
+      # If it fails, just try again...
       assert JSON.encode!(boards.incomplete) == json.encoded
       assert JSON.decode!(json.encoded) == json.decoded
     end
@@ -187,8 +190,41 @@ defmodule Islands.BoardTest do
     end
   end
 
+  describe "Board.hits/1" do
+    test "returns a board's total number of hits", %{
+      boards: boards,
+      origins: origins
+    } do
+      board = boards.complete
+      {:hit, :none, :no_win, board} = Board.guess(board, origins.atoll)
+      {:hit, :dot, :no_win, board} = Board.guess(board, origins.dot)
+      {:hit, :none, :no_win, board} = Board.guess(board, origins.l_shape)
+      {:miss, :none, :no_win, board} = Board.guess(board, origins.s_shape)
+      {:hit, :none, :no_win, board} = Board.guess(board, origins.square)
+      assert Board.hits(board) == 4
+    end
+  end
+
+  describe "Board.misses/1" do
+    test "returns a board's total number of misses", %{
+      boards: boards,
+      origins: origins,
+      misses: misses
+    } do
+      board = boards.complete
+      {:hit, :none, :no_win, board} = Board.guess(board, origins.atoll)
+      {:hit, :dot, :no_win, board} = Board.guess(board, origins.dot)
+      {:hit, :none, :no_win, board} = Board.guess(board, origins.l_shape)
+      {:miss, :none, :no_win, board} = Board.guess(board, origins.s_shape)
+      {:hit, :none, :no_win, board} = Board.guess(board, origins.square)
+      {:miss, :none, :no_win, board} = Board.guess(board, misses.square_13)
+      {:miss, :none, :no_win, board} = Board.guess(board, misses.square_99)
+      assert Board.misses(board) == 3
+    end
+  end
+
   describe "Board.grid_positions/1" do
-    test "returns a map of grid positions", %{
+    test "returns grid positions", %{
       grid_positions: grid_positions,
       boards: boards
     } do
@@ -197,7 +233,7 @@ defmodule Islands.BoardTest do
   end
 
   describe "Board.hit_cells/1" do
-    test "returns a map of hit cells", %{boards: boards, hits: hits} do
+    test "returns hit cells", %{boards: boards, hits: hits} do
       board = boards.complete
       {:hit, :none, :no_win, board} = Board.guess(board, hits.atoll.b1)
       {:hit, :none, :no_win, board} = Board.guess(board, hits.atoll.b2)
@@ -216,7 +252,7 @@ defmodule Islands.BoardTest do
   end
 
   describe "Board.miss_squares/1" do
-    test "returns a map of square numbers", %{boards: boards, misses: misses} do
+    test "returns miss squares", %{boards: boards, misses: misses} do
       board = boards.complete
       {:miss, :none, :no_win, board} = Board.guess(board, misses.square_13)
       {:miss, :none, :no_win, board} = Board.guess(board, misses.square_99)
@@ -225,6 +261,9 @@ defmodule Islands.BoardTest do
                %{squares: [13, 99]},
                %{squares: [99, 13]}
              ]
+
+      %{squares: squares} = Board.miss_squares(board)
+      assert %{squares: Enum.sort(squares)} == %{squares: [13, 99]}
     end
   end
 end

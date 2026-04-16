@@ -35,11 +35,11 @@ defmodule Islands.Board do
 
   @doc """
   Positions `island` on `board` and returns an updated `board` or
-  `{:error, reason}` if `island` overlaps another `board`'s island.
+  `{:error, reason}` if `island` overlaps another island on `board`.
   """
   @spec position_island(t, Island.t()) :: t | {:error, atom}
   def position_island(%Board{} = board, %Island{} = island) do
-    if overlaps_board_islands?(island, board.islands),
+    if overlaps_existing_islands?(island, board.islands),
       do: {:error, :overlapping_island},
       else: put_in(board.islands[island.type], island)
   end
@@ -53,11 +53,11 @@ defmodule Islands.Board do
   end
 
   @doc """
-  Checks if `guess` hit any island on `board` and returns a response tuple.
+  Checks if `guess` hitting any island on `board` and returns a response tuple.
   """
   @spec guess(t, Coord.t()) :: Response.t()
   def guess(%Board{} = board, %Coord{} = guess) do
-    Response.check_guess(board, guess) |> Response.format_response(board)
+    Response.check_all_islands(board, guess) |> Response.full_response(board)
   end
 
   @doc """
@@ -100,7 +100,7 @@ defmodule Islands.Board do
   end
 
   @doc """
-  Returns a map assigning the list of hits "cells" of each island
+  Returns a map assigning the list of hit "cells" of each island
   on `board` to its island type.
   """
   @spec hit_cells(t) :: %{Island.type() => [Island.grid_cell()]}
@@ -121,8 +121,10 @@ defmodule Islands.Board do
 
   ## Private functions
 
-  @spec overlaps_board_islands?(Island.t(), islands) :: boolean
-  defp overlaps_board_islands?(new_island, islands) do
+  # We ensure we're only checking the islands that we are not replacing.
+  # We don’t care about the one we're replacing because it’s going away.
+  @spec overlaps_existing_islands?(Island.t(), islands) :: boolean
+  defp overlaps_existing_islands?(new_island, islands) do
     Enum.any?(islands, fn {type, island} ->
       type != new_island.type and Island.overlaps?(new_island, island)
     end)
