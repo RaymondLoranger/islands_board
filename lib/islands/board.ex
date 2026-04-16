@@ -5,8 +5,12 @@ defmodule Islands.Board do
   @moduledoc """
   A board struct and functions for the _Game of Islands_.
 
-  The board struct contains the fields `islands` and `misses` representing the
-  properties of a board in the _Game of Islands_.
+  The board struct contains the fields:
+
+    - `islands`
+    - `misses`
+
+  representing the properties of a board in the _Game of Islands_.
 
   ##### Based on the book [Functional Web Development](https://pragprog.com/titles/lhelph/functional-web-development-with-elixir-otp-and-phoenix/) by Lance Halvorsen.
   """
