@@ -40,6 +40,10 @@ defmodule Islands.Board do
   @doc """
   Positions `island` on `board` and returns an updated `board` or
   `{:error, reason}` if `island` overlaps another island on `board`.
+
+  Error reason:
+
+    - `:overlapping_island` - overlaps another island
   """
   @spec position_island(t, Island.t()) :: t | {:error, atom}
   def position_island(%Board{} = board, %Island{} = island) do
