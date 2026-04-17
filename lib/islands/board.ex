@@ -115,7 +115,7 @@ defmodule Islands.Board do
   end
 
   @doc """
-  Returns a map assigning to :squares the list of square numbers
+  Returns a map assigning to `:squares` the list of square numbers
   from `board`'s misses.
   """
   @spec miss_squares(t) :: %{:squares => [Coord.square()]}
