@@ -11,7 +11,7 @@ defmodule Islands.Board.Response do
   @type t :: {:hit | :miss, Island.type() | :none, :no_win | :win, Board.t()}
 
   @doc """
-  Checks if `guess` hitting any island on `board`.
+  Checks if `guess` has hit any island on `board`.
 
   Returns `{:hit, hit_island}`, where hit_island is the island hit by `guess`
   once updated, or `{:miss, guess}` if `guess` was a miss.

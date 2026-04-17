@@ -57,7 +57,7 @@ defmodule Islands.Board do
   end
 
   @doc """
-  Checks if `guess` hitting any island on `board` and returns a response tuple.
+  Checks if `guess` has hit any island on `board` and returns a response tuple.
   """
   @spec guess(t, Coord.t()) :: Response.t()
   def guess(%Board{} = board, %Coord{} = guess) do
