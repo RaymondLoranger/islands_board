@@ -81,7 +81,7 @@ defmodule Islands.BoardTest do
     encoded =
       ~s<{"islands":{"dot":{"type":"dot","origin":{"row":9,"col":9},"coords":[{"row":9,"col":9}],"hits":[]},"square":{"type":"square","origin":{"row":9,"col":5},"coords":[{"row":9,"col":5},{"row":9,"col":6},{"row":10,"col":5},{"row":10,"col":6}],"hits":[]}},"misses":[]}>
 
-    # Incomplete board dencoded.
+    # Incomplete board decoded.
     decoded = %{
       "islands" => %{
         "dot" => %{
@@ -132,7 +132,8 @@ defmodule Islands.BoardTest do
       assert %{square: %Island{} = ^square} = board.islands
     end
 
-    test "returns {:error, reason} if islands overlap", %{islands: islands} do
+    test "returns {:error, :overlapping_island} if islands overlap",
+         %{islands: islands} do
       atoll = islands.atoll
       dot_overlap = islands.dot_overlap
       %Board{} = board = Board.new() |> Board.position_island(atoll)
@@ -191,10 +192,8 @@ defmodule Islands.BoardTest do
   end
 
   describe "Board.hits/1" do
-    test "returns a board's total number of hits", %{
-      boards: boards,
-      origins: origins
-    } do
+    test "returns a board's total number of hits",
+         %{boards: boards, origins: origins} do
       board = boards.complete
       {:hit, :none, :no_win, board} = Board.guess(board, origins.atoll)
       {:hit, :dot, :no_win, board} = Board.guess(board, origins.dot)
@@ -206,11 +205,8 @@ defmodule Islands.BoardTest do
   end
 
   describe "Board.misses/1" do
-    test "returns a board's total number of misses", %{
-      boards: boards,
-      origins: origins,
-      misses: misses
-    } do
+    test "returns a board's total number of misses",
+         %{boards: boards, origins: origins, misses: misses} do
       board = boards.complete
       {:hit, :none, :no_win, board} = Board.guess(board, origins.atoll)
       {:hit, :dot, :no_win, board} = Board.guess(board, origins.dot)
@@ -224,10 +220,8 @@ defmodule Islands.BoardTest do
   end
 
   describe "Board.grid_positions/1" do
-    test "returns grid positions", %{
-      grid_positions: grid_positions,
-      boards: boards
-    } do
+    test "returns grid positions",
+         %{grid_positions: grid_positions, boards: boards} do
       assert Board.grid_positions(boards.complete) == grid_positions
     end
   end

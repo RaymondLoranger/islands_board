@@ -39,13 +39,9 @@ defmodule Islands.Board do
 
   @doc """
   Positions `island` on `board` and returns an updated `board` or
-  `{:error, reason}` if `island` overlaps another island on `board`.
-
-  Error reason:
-
-    - `:overlapping_island` - overlaps another island
+  `{:error, :overlapping_island}` if `island` overlaps another island.
   """
-  @spec position_island(t, Island.t()) :: t | {:error, atom}
+  @spec position_island(t, Island.t()) :: t | {:error, :overlapping_island}
   def position_island(%Board{} = board, %Island{} = island) do
     if overlaps_existing_islands?(island, board.islands),
       do: {:error, :overlapping_island},
@@ -99,6 +95,23 @@ defmodule Islands.Board do
   @doc """
   Returns a map assigning the CSS grid position of each island
   on `board` to its island type.
+
+  ## Examples
+
+      iex> alias Islands.{Board, Coord, Island}
+      iex> {:ok, dot_origin} = Coord.new(9, 9)
+      iex> {:ok, square_origin} = Coord.new(9, 5)
+      iex> {:ok, dot} = Island.new(:dot, dot_origin)
+      iex> {:ok, square} = Island.new(:square, square_origin)
+      iex> incomplete =
+      ...>   Board.new() |>
+      ...>   Board.position_island(square) |>
+      ...>   Board.position_island(dot)
+      iex> Board.grid_positions(incomplete)
+      %{
+        dot: %{gridColumnStart: 9, gridRowStart: 9},
+        square: %{gridColumnStart: 5, gridRowStart: 9}
+      }
   """
   @spec grid_positions(t) :: %{Island.type() => Island.grid_position()}
   def grid_positions(%Board{islands: islands} = _board) do
@@ -110,6 +123,31 @@ defmodule Islands.Board do
   @doc """
   Returns a map assigning the list of hit "cells" of each island
   on `board` to its island type.
+
+  ## Examples
+
+      iex> alias Islands.{Board, Coord, Island}
+      iex> {:ok, atoll_origin} = Coord.new(1, 1)
+      iex> {:ok, dot_origin} = Coord.new(9, 9)
+      iex> {:ok, atoll} = Island.new(:atoll, atoll_origin)
+      iex> {:ok, dot} = Island.new(:dot, dot_origin)
+      iex> {:ok, b1} = Coord.new(1, 2)
+      iex> {:ok, b2} = Coord.new(2, 2)
+      iex> {:ok, b3} = Coord.new(3, 2)
+      iex> {:ok, a1} = Coord.new(9, 9)
+      iex> incomplete =
+      ...>   Board.new() |>
+      ...>   Board.position_island(atoll) |>
+      ...>   Board.position_island(dot)
+      iex> {:hit, :none, :no_win, incomplete} = Board.guess(incomplete, b1)
+      iex> {:hit, :none, :no_win, incomplete} = Board.guess(incomplete, b2)
+      iex> {:hit, :none, :no_win, incomplete} = Board.guess(incomplete, b3)
+      iex> {:hit, :dot, :no_win, incomplete} = Board.guess(incomplete, a1)
+      iex> Board.hit_cells(incomplete)
+      %{
+        atoll: ["b1", "b2", "b3"],
+        dot: ["a1"]
+      }
   """
   @spec hit_cells(t) :: %{Island.type() => [Island.grid_cell()]}
   def hit_cells(%Board{islands: islands} = _board) do
